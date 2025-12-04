@@ -23,6 +23,7 @@ class Sales(SQLModel, table=True):
 
     quantity: int = Field(default=0, nullable=False)
     sale_date: datetime = Field(sa_column=Column(DATE), default_factory=datetime.now)
+    total_profit: Optional[float] = Field(default=None)
     created_at: datetime = Field(default_factory=datetime.now)
 
     user: "User" = Relationship(back_populates="sales")
