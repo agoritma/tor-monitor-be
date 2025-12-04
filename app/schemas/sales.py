@@ -15,11 +15,15 @@ class SalesBase(SQLModel):
     goods_id: UUID
     quantity: int
     sale_date: datetime
+    total_profit: Optional[float] = None
     goods: GoodsBase
 
 
 class SalesAllResponse(SQLModel):
     data: list[SalesBase]
+    total: int
+    page: int
+    limit: int
 
 
 class SalesCreate(SQLModel):
