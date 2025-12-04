@@ -17,6 +17,9 @@ class GoodsBase(SQLModel):
 
 class GoodsAllResponse(SQLModel):
     data: list[GoodsBase]
+    total: int
+    page: int
+    limit: int
 
 
 class GoodsCreate(SQLModel):
