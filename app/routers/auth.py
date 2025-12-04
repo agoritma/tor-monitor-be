@@ -34,7 +34,7 @@ async def login_for_swagger(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.post("/sign_up/", tags=["users"])
+@router.post("/sign_up", tags=["users"])
 def sign_up(user: UserSign, supabase: SupabaseDependency, db: DBSessionDependency):
     try:
         auth_response = supabase.auth.sign_up(
@@ -57,7 +57,7 @@ def sign_up(user: UserSign, supabase: SupabaseDependency, db: DBSessionDependenc
     return {"message": "User signed up successfully, waiting for confirmation."}
 
 
-@router.post("/sign_in/", tags=["users"])
+@router.post("/sign_in", tags=["users"])
 def sign_in(user: UserSign, supabase: SupabaseDependency):
     try:
         response = supabase.auth.sign_in_with_password(
