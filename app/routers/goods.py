@@ -1,5 +1,6 @@
 import logging
 from uuid import UUID
+from typing import Optional
 
 from fastapi import APIRouter, HTTPException
 from sqlmodel import select
@@ -17,13 +18,19 @@ logger = logging.getLogger(__name__)
 router = APIRouter(tags=["goods"])
 
 
-@router.get("/api/goods/")
+@router.get("/api/goods")
 def get_goods(
-    db: DBSessionDependency, user: UserDependency, limit: int = 50
+    db: DBSessionDependency,
+    user: UserDependency,
+    limit: int = 20,
+    page_index: int = 1,
+    q: Optional[str] = None,
 ) -> GoodsAllResponse:
     try:
-        goods = crud.get_all_goods(db, user_id=user.id, limit=limit)
-        return {"data": goods}
+        goods, total = crud.get_all_goods(
+            db, user_id=user.id, limit=limit, page_index=page_index, q=q
+        )
+        return {"data": goods, "total": total, "page": page_index, "limit": limit}
     except Exception as e:
         logging.error("Error fetching goods %s", e)
         raise HTTPException(status_code=400, detail="Error fetching goods")
@@ -38,7 +45,7 @@ def get_goods_by_id(
     return resp
 
 
-@router.post("/api/goods/")
+@router.post("/api/goods")
 def create_goods(db: DBSessionDependency, goods: GoodsCreate, user: UserDependency):
     try:
         db.add(Goods(**goods.model_dump(), user_id=user.id))
@@ -84,20 +91,3 @@ def delete_goods(goods_id: UUID, db: DBSessionDependency, user: UserDependency):
     db.delete(db_goods)
     db.commit()
     return {"message": "Goods deleted successfully", "data": db_goods}
-
-
-@router.get("/goods/search/")
-def search_goods(
-    query: str, db: DBSessionDependency, user: UserDependency
-) -> GoodsAllResponse:
-    try:
-        q = db.exec(
-            select(Goods).where(
-                Goods.user_id == user.id,
-                Goods.name.ilike(f"%{query}%"),
-            )
-        )
-        return {"data": q.all()}
-    except Exception as e:
-        logging.error("Error searching goods %s", e)
-        raise HTTPException(status_code=400, detail="Error searching goods")
