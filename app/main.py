@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from os import environ
 
-from .routers import auth, goods, sales, dashboard
+from .routers import auth, goods, sales, dashboard, chat
 
 load_dotenv()
 logger = logging.getLogger(__name__)
@@ -27,3 +27,4 @@ app.include_router(auth.router)
 app.include_router(dashboard.router)
 app.include_router(goods.router)
 app.include_router(sales.router)
+app.include_router(chat.router)
