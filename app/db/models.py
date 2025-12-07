@@ -4,7 +4,7 @@ from uuid import UUID, uuid4
 
 from sqlmodel import Field, Relationship, SQLModel
 from sqlalchemy import Column
-from sqlalchemy.dialects.postgresql import ARRAY, INTEGER, DATE
+from sqlalchemy.dialects.postgresql import DATE, JSON
 
 
 class AuthSchemeModel(SQLModel, table=True):
@@ -36,11 +36,8 @@ class RestockInference(SQLModel, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     goods_id: UUID = Field(foreign_key="goods.id", nullable=False)
 
-    predicted_restock_date: List[datetime] = Field(
-        sa_column=Column(ARRAY(DATE), nullable=False)
-    )
-    quantity_needed: List[int] = Field(sa_column=Column(ARRAY(INTEGER), nullable=False))
     total_quantity: int = Field(default=0, nullable=False)
+    future_preds: Optional[dict] = Field(default=None, sa_column=Column(JSON))
 
     created_at: datetime = Field(default_factory=datetime.now)
     goods: "Goods" = Relationship(back_populates="restock_inferences")
