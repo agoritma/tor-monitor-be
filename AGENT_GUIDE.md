@@ -4,7 +4,7 @@
 
 Agent AI ini dirancang khusus untuk membantu UMKM mengelola inventory dan penjualan mereka melalui chat interface. Agent memiliki kemampuan untuk:
 
-- **Manajemen Barang**: Melihat, menambah, mengubah, menghapus barang
+- **Manajemen Barang**: Melihat, menambah, menghapus barang
 - **Pencatatan Penjualan**: Mencatat penjualan dan otomatis mengurangi stok
 - **Forecast & Prediksi**: Memberikan prediksi penjualan dan rekomendasi restok
 - **Saran Terbaik**: Menganalisis data dan memberikan rekomendasi berdasarkan pola penjualan
@@ -29,12 +29,6 @@ Agent: Menampilkan informasi lengkap satu barang
 ```
 User: "Tambahkan barang baru: Beras premium, kategori pangan, harga 15000, stok 50 unit"
 Agent: Menambahkan barang dan menampilkan konfirmasi dengan ID
-```
-
-**Mengubah Data Barang**
-```
-User: "Ubah harga barang [id] menjadi 20000 dan tambah stok 10 unit"
-Agent: Memperbarui data barang sesuai permintaan
 ```
 
 **Menghapus Barang**
