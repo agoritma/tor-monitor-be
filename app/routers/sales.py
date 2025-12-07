@@ -1,11 +1,12 @@
 import logging
+from typing import Optional
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException
+
 from ..db import crud
 from ..dependencies import DBSessionDependency, UserDependency
-from ..schemas.sales import SalesCreate, SalesUpdate, SalesAllResponse
-from typing import Optional
+from ..schemas.sales import SalesCreate, SalesUpdate
 
 logger = logging.getLogger(__name__)
 router = APIRouter(tags=["sales"])
@@ -18,7 +19,7 @@ def get_sales(
     limit: int = 20,
     page_index: int = 1,
     q: Optional[str] = None,
-) -> SalesAllResponse:
+):
     try:
         sales, total = crud.get_all_sales(
             db, user_id=user.id, limit=limit, page_index=page_index, q=q

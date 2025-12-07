@@ -1,17 +1,16 @@
 import logging
-from uuid import UUID
 from typing import Optional
+from uuid import UUID
 
 from fastapi import APIRouter, HTTPException
 from sqlmodel import select
+
 from ..db import crud
 from ..db.models import Goods, RestockInference, Sales
 from ..dependencies import DBSessionDependency, UserDependency
 from ..schemas.goods import (
     GoodsCreate,
     GoodsUpdate,
-    GoodsAllResponse,
-    GoodsDetailResponse,
 )
 
 logger = logging.getLogger(__name__)
@@ -25,7 +24,7 @@ def get_goods(
     limit: int = 20,
     page_index: int = 1,
     q: Optional[str] = None,
-) -> GoodsAllResponse:
+):
     try:
         goods, total = crud.get_all_goods(
             db, user_id=user.id, limit=limit, page_index=page_index, q=q
@@ -37,12 +36,9 @@ def get_goods(
 
 
 @router.get("/api/goods/{goods_id}")
-def get_goods_by_id(
-    goods_id: UUID, db: DBSessionDependency, user: UserDependency
-) -> GoodsDetailResponse:
+def get_goods_by_id(goods_id: UUID, db: DBSessionDependency, user: UserDependency):
     goods_detail = crud.get_goods_with_relations(db, goods_id=goods_id, user_id=user.id)
-    resp = {"data": goods_detail}
-    return resp
+    return {"data": goods_detail}
 
 
 @router.post("/api/goods")

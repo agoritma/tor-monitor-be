@@ -3,9 +3,10 @@ from datetime import datetime
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException
+
 from ..db import crud
 from ..dependencies import DBSessionDependency, UserDependency
-from ..schemas.dashboard import DashboardResponse, DashboardData, TopSellingItem
+from ..schemas.dashboard import DashboardResponse, TopSellingItem
 
 logger = logging.getLogger(__name__)
 router = APIRouter(tags=["dashboard"])
@@ -15,8 +16,8 @@ router = APIRouter(tags=["dashboard"])
 def get_dashboard(
     db: DBSessionDependency,
     user: UserDependency,
-    year: int = None,
-    month: int = None,
+    year: Optional[int] = None,
+    month: Optional[int] = None,
 ) -> DashboardResponse:
     """Get dashboard data with optional year and month filter.
 
@@ -60,14 +61,14 @@ def get_dashboard(
             top_selling_item = TopSellingItem(**top_selling_item_data)
 
         # Build response
-        dashboard_data = DashboardData(
-            top_low_stock=top_low_stock,
-            sales_chart=sales_chart,
-            monthly_revenue=monthly_revenue,
-            top_selling_item=top_selling_item,
-        )
-
-        return {"data": dashboard_data}
+        return {
+            "data": {
+                "top_low_stock": top_low_stock,
+                "sales_chart": sales_chart,
+                "monthly_revenue": monthly_revenue,
+                "top_selling_item": top_selling_item,
+            }
+        }
 
     except HTTPException:
         raise
