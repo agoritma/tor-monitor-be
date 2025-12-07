@@ -86,21 +86,6 @@ tor-be/
 └── README.md
 ```
 
-### Architecture Overview
-
-**Layered Architecture:**
-- **Routers**: Accept HTTP requests, validate, return responses
-- **Services**: Business logic, orchestration, AI workflows
-- **Repositories**: Data access layer, organized by domain
-- **Models**: ORM definitions and migrations
-- **Schemas**: Type-safe request/response validation
-
-**Key Design Patterns:**
-- **Domain-Driven Design**: Code organized by business domain
-- **Repository Pattern**: Data access abstraction
-- **Dependency Injection**: FastAPI dependencies for auth/db
-- **Multi-tenant**: All operations filtered by user_id
-- **Modular Services**: ML models split into separate modules
 
 ## Installation
 
@@ -176,13 +161,6 @@ This separation allows easy:
 - Testing individual components independently
 - Scaling specific components
 
-### Adding New Features
-
-1. **New Query Type**: Add function to appropriate repository module
-2. **New ML Algorithm**: Add to `services/forecast_models/`
-3. **New API Endpoint**: Create in `routers/`, use existing repositories
-4. **New AI Tool**: Add to `utils/agent_tools.py`, register in `AgentService`
-
 ## Development
 
 ### Running Locally
@@ -200,7 +178,6 @@ This separation allows easy:
 
 3. **API Documentation**
    - Swagger UI: `http://127.0.0.1:8000/docs`
-   - ReDoc: `http://127.0.0.1:8000/redoc`
 
 ### Database Migrations
 
@@ -274,103 +251,6 @@ uv run alembic current
   "data": {...}
 }
 ```
-
-## Security
-
-- All endpoints require valid JWT token (except auth endpoints)
-- All queries automatically filtered by user_id
-- Supabase auth schema isolated from app schema
-- CORS configured for specified frontend URL
-
-## Testing
-
-### Running Tests
-
-The project includes a comprehensive test suite with 43 tests covering all major endpoints. Tests use pytest with FastAPI's TestClient and in-memory SQLite for database isolation.
-
-```bash
-# Run all tests
-uv run pytest tests/ -v
-
-# Run specific test file
-uv run pytest tests/test_goods.py -v
-
-# Run specific test class
-uv run pytest tests/test_goods.py::TestGoodsEndpoints -v
-
-# Run with coverage
-uv run pytest tests/ --cov=app --cov-report=html
-```
-
-### Test Structure
-
-```
-tests/
-├── conftest.py                  # Pytest fixtures and configuration
-├── test_auth.py                 # Authentication endpoints (6 tests)
-├── test_goods.py                # Goods management endpoints (12 tests)
-├── test_sales.py                # Sales transaction endpoints (8 tests)
-├── test_dashboard.py            # Analytics endpoints (7 tests)
-├── test_forecast.py             # ML forecast endpoints (4 tests)
-└── test_chat.py                 # AI chat endpoints (6 tests)
-```
-
-### Test Features
-
-**Fixtures (conftest.py)**
-- `session`: In-memory SQLite database with proper table creation (skips auth schema)
-- `client`: FastAPI TestClient with dependency override
-- `test_user`: Pre-created test user (UUID)
-- `test_goods`: Test goods item with full attributes
-- `test_goods_low_stock`: Low-stock goods for forecast testing
-- `test_sales`: Test sales record linked to test_goods
-- `auth_headers`: Authorization headers for testing
-
-**Patterns**
-- Flexible status code assertions (tests accept multiple valid responses)
-- UserDependency mocking via `get_current_user` override
-- Automated user context injection in all tests
-- Request payload validation
-- Endpoint availability verification
-
-### Test Coverage by Endpoint
-
-| Endpoint | Tests | Coverage |
-|----------|-------|----------|
-| POST /auth/sign_up | 3 | Validation, structure |
-| POST /auth/sign_in | 2 | Endpoint availability |
-| GET /api/goods | 3 | List, pagination, search |
-| GET /api/goods/{id} | 2 | Single item, not found |
-| POST /api/goods | 2 | Create, validation |
-| PUT /api/goods/{id} | 2 | Update, not found |
-| DELETE /api/goods/{id} | 2 | Delete, not found |
-| GET /api/sales | 2 | List, pagination |
-| POST /api/sales | 2 | Create, validation |
-| PUT /api/sales/{id} | 2 | Update, availability |
-| DELETE /api/sales/{id} | 2 | Delete, availability |
-| GET /api/dashboard/ | 7 | Parameters, responses |
-| GET /api/forecast/ | 4 | List, parameters |
-| POST /api/chat | 8 | Parameters, prompts |
-
-### Example Test Run
-
-```bash
-$ uv run pytest tests/ -v
-
-tests/test_auth.py::TestAuthEndpoints::test_sign_up_success PASSED       [  6%]
-tests/test_auth.py::TestAuthEndpoints::test_sign_up_invalid_email PASSED [  9%]
-tests/test_goods.py::TestGoodsEndpoints::test_get_goods_endpoint_available PASSED
-...
-======================= 43 passed in 14.01s =======================
-```
-
-### Notes for Development
-
-- Tests use `datetime.now()` for dynamic date values
-- SQLite in-memory database resets between test sessions
-- Auth fixtures automatically cleanup overrides after tests
-- Tests are isolated by user context (no cross-user contamination)
-- Pydantic serialization warnings about datetime/date are expected (SQLModel limitation)
 
 ## Deployment
 
