@@ -33,7 +33,10 @@ def get_all_sales(
         HTTPException: If no sales found
     """
     query = (
-        select(Sales).where(Sales.user_id == user_id).options(selectinload(Sales.goods))
+        select(Sales)
+        .where(Sales.user_id == user_id)
+        .order_by(Sales.sale_date.desc())
+        .options(selectinload(Sales.goods))
     )
 
     # Add search filter if query is provided
@@ -55,7 +58,6 @@ def get_all_sales(
     result = list(db.exec(query).all())
     if not result:
         raise HTTPException(status_code=404, detail="Sales not found")
-
     return result, total_count
 
 
