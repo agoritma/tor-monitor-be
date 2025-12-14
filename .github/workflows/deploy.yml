@@ -13,6 +13,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Create .env file
+        run: |
+          cat <<EOF > .env
+          SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
+          SUPABASE_DB_STRING=${{ secrets.SUPABASE_DB_STRING }}
+          DEV_ENV=${{ secrets.DEV_ENV }}
+          GROQ_KEY=${{ secrets.GROQ_KEY }}
+          FRONTEND_URL=${{ secrets.FRONTEND_URL }}
+
       - name: Deactivate old compose
         run: |
           docker compose down
