@@ -23,10 +23,6 @@ jobs:
           GROQ_KEY=${{ secrets.GROQ_KEY }}
           FRONTEND_URL=${{ secrets.FRONTEND_URL }}
 
-      - name: Deactivate old compose
-        run: |
-          docker compose down
-
-      - name: Build new container and run it
+      - name: Build new container
         run: |
           docker compose up -d --build
