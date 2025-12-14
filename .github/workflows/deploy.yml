@@ -2,8 +2,8 @@ name: Deploy to Homelab
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+    paths: 'app/**'
 
 jobs:
   deploy:
